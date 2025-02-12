@@ -56,6 +56,9 @@ mmlu_lst = [mmlu_test_question_plus_choices,
             mmlu_dev_question_plus_choices,
             mmlu_aux_question_plus_choices]
 
+print(len((mmlu_test_question_plus_choices)))
+exit(1)
+
 number_dictionary = {
         '0': 'test',
         '1': 'validation',
@@ -75,7 +78,10 @@ integrated_answer = {
 
 for number, mmlu in enumerate(mmlu_lst):
     print(f'the operation is on {number_dictionary[str(number)]}')
-    
+
+    if number:
+        continue
+
     answers = []
     for idx, question in enumerate(mmlu, start = 1):
         print(f"====================Q{idx}====================")

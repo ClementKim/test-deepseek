@@ -1,0 +1,60 @@
+answers from deepseek-r1:70b
+===================================question 1===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 2===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 3===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 4===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 5===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 6===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 7===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 8===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 9===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 10===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 11===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 12===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 13===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 14===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 15===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 16===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 17===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 18===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 19===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 20===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 21===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 22===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 23===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 24===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 25===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 26===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 27===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+===================================question 28===================================
+Error: 404, {"error":"model 'deepseek-r1:70b' not found"}
+Testing deepseek-r1:70b is done
+
+
