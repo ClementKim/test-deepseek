@@ -30,7 +30,9 @@ def txt_to_list(file_name):
     return question
 
 def main():
-    file_name = "political_question.txt"
+    file_list = ["test", "../70b-test/political_question", "../benchmark/AIME2024", "../gre/gre_questions"]
+
+    file_name = file_list[0] + ".txt"
     model_number = 70
 
     qustions = txt_to_list(file_name)
