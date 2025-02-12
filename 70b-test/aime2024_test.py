@@ -3,7 +3,7 @@ import json
 
 url = "http://localhost:11434/api/generate"
 
-version = ["32"]
+version = ["70"]
 
 f = open('../benchmark/AIME2024.txt', 'r')
 
