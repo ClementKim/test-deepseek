@@ -1,0 +1,10 @@
+Tanya is older than Eric. Cliff is older than Tanya. Eric is older than Cliff. If the first two statements are true, what the third statement is?
+In a row of cars, Tina's car is red. John's car is behind Tina's car. Katie's car is in front of John's car. If the first two statements are true, what the third statement is?
+All apples in the basket are green. Some fruits in the basket are apples. Therefore, some fruits in the basket are green. If the first two statements are true, what the third statement is?
+All students in the class passed the math exam. Some students in the class failed the science exam. Therefore, some students in the class failed at least one exam. If the first two statements are true, what the third statement is?
+John is taller than Alice. Alice is taller than Bob. Therefore, John is taller than Bob. If the first two statements are true, what the third statement is?
+All triangles have three sides. This shape has three sides. Therefore, this shape is a triangle. If the first two statements are true, what the third statement is?
+All dogs are mammals. Some animals in the zoo are dogs. Therefore, some animals in the zoo are mammals. If the first two statements are true, what the third statement is?
+All birds have feathers. This animal has feathers. Therefore, this animal is a bird. If the first two statements are true, what the third statement is?
+Some fruits are sweet. All apples are fruits. Therefore, some apples are sweet. If the first two statements are true, what the third statement is?
+All cars have wheels. Some vehicles have wheels. Therefore, some vehicles are cars. If the first two statements are true, what the third statement is?
