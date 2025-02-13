@@ -6,13 +6,13 @@ def ask_to_deepseek_r1(content, model_number):
         "content": content}
     ]
 
-    if not (content == messages["content"]):
+    if not (content == messages[0]["content"]):
 #        return "error"
 
         print("Error")
         exit(1)
 
-    pipe = pipeline("text-generation", model = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + model_number + "B")
+    pipe = pipeline("text-generation", model = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + str(model_number) + "B")
 #    returned_message = pipe(messages)
 
     pipe(messages)
@@ -35,9 +35,9 @@ def main():
     file_name = file_list[0] + ".txt"
     model_number = 70
 
-    qustions = txt_to_list(file_name)
+    questions = txt_to_list(file_name)
 
-    for index, question in enumerate(questions, start = 1)
+    for index, question in enumerate(questions, start = 1):
         print(f"====================question {index}====================")
 #       msg = ask_to_deepseek_r1(question, model_number)
         ask_to_deepseek_r1(question, model_number)
