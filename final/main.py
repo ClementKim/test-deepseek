@@ -35,13 +35,13 @@ def run_model(
 
         response = requests.post(url, json = data, headers = headers)
 
-        if response.status_code = 200:
-            json_objects = response.content.decode().strip().spilt("\n")
+        if response.status_code == 200:
+            json_objects = response.content.decode().strip().split("\n")
             data = [json.loads(obj) for obj in json_objects]
 
             res_text = ''
             for item in data:
-                res_text = item['response']
+                res_text += item['response']
 
             returned_respond.append(res_text)
 
@@ -50,7 +50,7 @@ def run_model(
 
     return returned_respond
 
-def split_answer_thinking(model_result : list) -> list, list:
+def split_answer_thinking(model_result : list) -> tuple[list, list]:
     answer_only = []
     thinking_only = []
 
@@ -70,12 +70,14 @@ def split_answer_thinking(model_result : list) -> list, list:
                 thinking_temp_list.append(think_process)
 
 
-        thinking_only.append([index, thinking_temp_list])
+        thinking_only.append(thinking_temp_list)
 
         if sentence_split[-1] == "\\]":
             boxed_answer = sentence_split[-2]
+        else:
+            boxed_answer = sentence_split[-1]
 
-        answer_only.append([index, boxed_answer])
+        answer_only.append(boxed_answer)
 
     return answer_only, thinking_only
 
@@ -85,13 +87,14 @@ def find_word_china_and_chinese(thinking_only : list) -> dict:
         "china" : 0
     }
 
-    for answer in thinking_only:
-        china_or_chinese["chinese"] += len(re.findall(r"\b[Cc]hinese", answer))
-        china_or_chinese["china"] += len(re.findall(r"\b[Cc]hina", answer))
+    for thinking_list in thinking_only:
+        for think in thinking_list:
+            china_or_chinese["chinese"] += len(re.findall(r"\b[Cc]hinese", think))
+            china_or_chinese["china"] += len(re.findall(r"\b[Cc]hina", think))
 
     return china_or_chinese
 
-def find_speak_chinese(respond_list : list) -> bool, int, list:
+def find_speak_chinese(respond_list : list) -> tuple[bool, int, list]:
     number_of_chinese = 0
     speak_chinese = False
 
@@ -107,7 +110,7 @@ def find_speak_chinese(respond_list : list) -> bool, int, list:
     if not (number_of_chinese):
         speak_chinese = True
 
-    return speak_chinese, number_of_chinese, error_list
+    return speak_chinese, number_of_chinese, errors_list
 
 
 def matching_answer(
@@ -141,11 +144,12 @@ def matching_answer(
 def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
-        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
-        ["benchmark/gre/gre-questions.txt", "string", False],
-        ["questions/political_question.txt", "string", True],
-        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
-        ["questions/question_not_logic.txt", "string", False]
+        ["questions/sample_question.txt", "string", False]
+#        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
+#        ["benchmark/gre/gre-questions.txt", "string", False],
+#        ["questions/political_question.txt", "string", True],
+#        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
+#        ["questions/question_not_logic.txt", "string", False]
     ]
 
     model_to_run = [70]
@@ -153,18 +157,18 @@ def main():
 
     for testing_target in question_and_answer_dir:
         questions = file_to_list(testing_target[0])
+
         returned_result[testing_target[0]] = {}
 
         for model_number in model_to_run:
             result_to_append = []
 
             returned_respond = run_model(model_number, questions)
+
             respond_answer, think = split_answer_thinking(returned_respond)
-            speak_chinese, number_of_chinese, error_list = find_speak_chinese(returned_respond) # error list is temporal list
+            speak_chinese, number_of_chinese, error_list = find_speak_chinese(returned_respond)
 
-            result_to_append.extend([speak_chinese, number_of_chinese, testing_target[2]])
-
-            print(error_list) # temporal command for testing
+            result_to_append.extend([speak_chinese, number_of_chinese, error_list, testing_target[2]])
 
             if not (testing_target[2]):
                 mentioning_china_or_chinese_while_thinking = find_word_china_and_chinese(think)
@@ -179,7 +183,7 @@ def main():
                 result_to_append.append(number_of_matching)
 
             else:
-                result_to_append(respond_answer)
+                result_to_append.append(respond_answer)
 
             returned_result[testing_target[0]][model_number] = result_to_append
 
@@ -191,16 +195,20 @@ def main():
                 file.write("speaking Chinese: " + str(value[0]) + "\n")
                 file.write("number of chinese: " + str(value[1]) + "\n")
 
-                if not (value[2]):
-                    file.write('number of mentioning the word "Chinese" while thinking: ' + str(value[3]['chinese'] + "\n"))
-                    file.write('number of mentioning the word "China" while thinking: ' + str(value[3]['china'] + "\n"))
+                file.write("error sentences: \n")
+                for sentence in value[2]:
+                    file.write(sentence + "\n")
+
+                if not (value[3]):
+                    file.write('number of mentioning the word "Chinese" while thinking: ' + str(value[4]['chinese']) + "\n")
+                    file.write('number of mentioning the word "China" while thinking: ' + str(value[4]['china']) + "\n")
 
                 if (target_key[1] == "number"):
-                    file.write("number of corrects: " + str(value[4] + "\n")
+                    file.write("number of corrects: " + str(value[5] + "\n"))
 
                 else:
                     file.write("returned responds: \n")
-                    for respond in value[4]:
+                    for respond in value[5]:
                         file.write(respond + "\n")
 
             file.close()
