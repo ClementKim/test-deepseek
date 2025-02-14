@@ -230,7 +230,7 @@ def main():
                 else:
                     file.write("returned responds: \n")
                     for idx, respond in enumerate(value[5], start = 1):
-                        file.write("Q" + idx + ":")
+                        file.write("Q" + str(idx) + ":")
                         file.write(respond + "\n")
 
             file.close()
