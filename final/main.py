@@ -2,13 +2,28 @@ import requests
 import json
 import re
 
+import pandas as pd
+
 def file_to_list(file_dir : str) -> list:
-    f = open(file_dir, "r")
+    if (file_dir[-4:] == ".csv"):
+        df = pd.read_csv(file_dir)
 
-    lines = f.read()
+        question = df.loc[:, "Question"]
 
-    listed_file = list(lines.split("\n"))
-    listed_file.pop()
+        listed_file = []
+        for q in question:
+            if q == "\n":
+                continue
+
+            listed_file.append(q)
+
+    elif (file_dir[-4:] == ".txt"):
+        f = open(file_dir, "r")
+
+        lines = f.read()
+
+        listed_file = list(lines.split("\n"))
+        listed_file.pop()
 
     return listed_file
 
@@ -24,6 +39,8 @@ def run_model(
 
     returned_respond = []
     for idx, question in enumerate(question_list, start = 1):
+        print(f"now solving Q{idx}")
+
         data = {
             "model": model_name,
             "prompt": question
@@ -62,6 +79,7 @@ def split_answer_thinking(model_result : list) -> tuple[list, list]:
         for think_process in sentence_split:
             if "<think>" in think_process:
                 thinking = True
+                continue
 
             elif "</think>" in think_process:
                 break
@@ -144,7 +162,8 @@ def matching_answer(
 def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
-        ["questions/sample_question.txt", "string", False]
+#        ["questions/sample_question.txt", "string", False],
+        ["benchmark/gpqa_diamond.csv", "string", False]
 #        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
@@ -187,7 +206,7 @@ def main():
 
             returned_result[testing_target[0]][model_number] = result_to_append
 
-    for target_key in question_and_answer_dir:
+    for idx, target_key in enumerate(question_and_answer_dir, start = 1):
         for key, value in returned_result[target_key[0]].items():
             save_file = "result/"+ target_key[0][:-4] + "_" + str(key) + "_result.txt"
 
@@ -197,7 +216,9 @@ def main():
 
                 file.write("error sentences: \n")
                 for sentence in value[2]:
-                    file.write(sentence + "\n")
+                    file.write(sentence + " ")
+
+                file.write("\n")
 
                 if not (value[3]):
                     file.write('number of mentioning the word "Chinese" while thinking: ' + str(value[4]['chinese']) + "\n")
@@ -208,7 +229,8 @@ def main():
 
                 else:
                     file.write("returned responds: \n")
-                    for respond in value[5]:
+                    for idx, respond in enumerate(value[5], start = 1):
+                        file.write("Q" + idx + ":")
                         file.write(respond + "\n")
 
             file.close()
