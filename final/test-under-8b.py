@@ -3,7 +3,7 @@ import pandas as pd
 from sys import argv
 from transformers import pipeline
 
-def ask_to_deepseek_r1(
+def run_model(
         questions : list,
         model_number_ipt : str
         ) -> list:
@@ -26,6 +26,34 @@ def ask_to_deepseek_r1(
         if question_number == 1:
             print(respond)
             exit(1)
+
+def matching_answer(
+        answer_list : list,
+        model_result_list : list
+        ) -> int:
+
+    number_of_matching = 0
+    actual_returned_answer = []
+
+    for sentence in model_result_list:
+        for index in range(len(sentence)-1, 7, -1):
+            if sentence[index-7:index] == "\\boxed{":
+                answer = 0
+                while sentence[index + anchor] != "}":
+                    answer += 1
+
+                actual_returned_answer.append(sentence[index:index + anchor])
+
+    if not (len(actual_returned_answer) == len(answer_lsit)):
+        print("Error: the length of actual returned answer list are not matching")
+
+        return -1
+
+    for index in range(len(answer_list)):
+        if (int(answer_list[index]) == int(actual_returned_answer[index])):
+            number_of_matching += 1
+
+    return number_of_matching
 
 def file_to_list(file_name : str) -> list:
     if (file_name[-4:] == ".csv"):
@@ -55,14 +83,19 @@ def file_to_list(file_name : str) -> list:
     return listed_file
 
 def main():
-    file_list = []
+    file_list = [
+        # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
+        ["questions/question_logic.txt", "number", False, "qustions/question_logic-answer.txt"]
+    ]
 
 #    file_name = 
     model_number = argv[1]
-    questions = file_to_list(file_name)
 
-    for index, question in enumerate(questions, start = 1):
-        ask_to_deepseek_r1(question, model_number)
+    for target_dir in file_list:
+        questions = file_to_list(file_name)
+
+        for index, question in enumerate(questions, start = 1):
+            run_model(question, model_number)
 
 if __name__ == "__main__":
     main()
