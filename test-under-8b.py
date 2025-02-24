@@ -8,24 +8,23 @@ def run_model(
         model_number_ipt : str
         ) -> list:
 
+    full_answer = []
+
+    pipe = pipeline("text-generation",
+            model = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + model_number_ipt + "B",
+            device_map = "auto"
+            )
+
     for question_number, question in enumerate(questions, start = 1):
-        messages = [{
-                "role": "user",
-                "content": content
-        }]
+        if not(question):
+            break
 
-        if not (content == messages[0]["content"]):
-            print("Error in messages content: question number {question_number}")
-            exit(1)
+        full_answer.append(list(pipe(question,
+                        max_length = 4096,
+                        do_sample = True,
+                        truncation = True)))
 
-        pipe = pipeline("text-generation", model = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + model_number + "B")
-
-        respond = list(pipe(messages))
-
-        # for testing returned msg
-        if question_number == 1:
-            print(respond)
-            exit(1)
+    return full_answer
 
 def matching_answer(
         answer_list : list,
@@ -68,13 +67,13 @@ def file_to_list(file_name : str) -> list:
 
             listed_file.append(q)
 
-    elif (file_dir[-4:] == ".txt"):
+    elif (file_name[-4:] == ".txt"):
         f = open(file_name, "r")
 
         lines = f.read()
 
         listed_file = list(lines.split("\n"))
-        question.pop()
+        listed_file.pop()
 
     else:
         print("file type error")
@@ -85,17 +84,25 @@ def file_to_list(file_name : str) -> list:
 def main():
     file_list = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
-        ["questions/question_logic.txt", "number", False, "qustions/question_logic-answer.txt"]
+        # ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
+        # ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"]
+        ["questions/question_logic_original.txt", "string", False]
     ]
 
 #    file_name = 
     model_number = argv[1]
 
     for target_dir in file_list:
+        file_name = target_dir[0]
+
         questions = file_to_list(file_name)
 
-        for index, question in enumerate(questions, start = 1):
-            run_model(question, model_number)
+        testing_list = run_model(questions, model_number)
 
+        for i in range(len(testing_list)):
+            print(testing_list[i])
+
+    print("done")
+    
 if __name__ == "__main__":
     main()

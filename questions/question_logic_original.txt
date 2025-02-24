@@ -1,0 +1,9 @@
+This "burning rope" problem is a classic logic puzzle. You have two ropes that each take an hour to burn; however, they burn at inconsistent rates. How can you measure 45 minutes? (You can light one or both ropes at one or both ends at the same time.
+The day before two days after the day before tomorrow is Saturday. What day is it today?
+Five people were eating apples, A finished before B, but behind C. D finished before E, but behind B. What was the finishing order?
+There are two ducks in front of a duck, two ducks behind a duck and a duck in the middle. How many ducks are there?
+A man has 53 socks in his drawer: 21 identical blue, 15 identical black and 17 identical red. The lights are out, and he is completely in the dark. How many socks must he take out to make 100 percent certain he has at least one pair of black socks?
+A girl meets a lion and unicorn in the forest. The lion lies every Monday, Tuesday and Wednesday, and the other days, he speaks the truth. The unicorn lies on Thursdays, Fridays and Saturdays, and the other days of the week, he speaks the truth. "Yesterday, I was lying," the lion told the girl. "So was I," said the unicorn. What day is it?
+A bad guy is playing Russian roulette with a six-shooter revolver. He puts in one bullet, spins the chambers and fires at you, but no bullet comes out. He gives you the choice of whether or not he should spin the chambers again before firing a second time. Should he spin again?
+Susan and Lisa decided to play tennis against each other. They bet $1 on each game they played. Susan won three bets and Lisa won $5. How many games did they play?
+
