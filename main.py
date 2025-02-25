@@ -168,10 +168,11 @@ def matching_answer(
 def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
-#        ["questions/sample_question.txt", "string", False],
+        ["questions/sample_question.txt", "string", False],
+        ["questions/sample_question2.txt", "string", False],
 #        ["benchmark/gpqa_diamond.csv", "string", False]
 #        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
-        ["benchmark/aime/2024/AIME2024.txt", "string", False],
+#        ["benchmark/aime/2024/AIME2024.txt", "string", False],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
