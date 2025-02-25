@@ -26,6 +26,8 @@ def file_to_list(file_dir : str) -> list:
         listed_file = list(lines.split("\n"))
         listed_file.pop()
 
+        f.close()
+
     return listed_file
 
 def run_model(

@@ -1,0 +1,24 @@
+question number 1 :
+:** Light both ropes with Rope A from both ends and Rope B from one end. After 30 minutes, light Rope B from both ends, resulting in it burning out at 45 minutes.'}]
+
+question number 2 :
+**\n\\boxed{Saturday}\nThe day before two days after the day before tomorrow is Saturday, so today must be Saturday.\n\n\\boxed{Saturday}\n</think>\n\nLet\'s denote today as \\( T \\).\n\n1. The day before tomorrow is \\( T - 1 \\).\n2. Two days after the day before tomorrow is \\( (T - 1) + 2 = T + 1 \\).\n3. The day before two days after the day before tomorrow is \\( (T + 1) - 1 = T \\).\n\nGiven that this day is Saturday, today \\( T \\) must be Saturday.\n\nTo verify, if today is Saturday:\n- Tomorrow is Sunday.\n- The day before tomorrow is Friday.\n- Two days after Friday is Sunday.\n- The day before Sunday is Saturday.\n\nThus, today is Saturday.\n\n\\[\n\\boxed{Saturday}\n\\]'}]
+
+question number 3 :
+**\nThe finishing order was C, A, B, D, E, so the answer is \\boxed{CABDE}.\n</think>\n\nGiven five people eating apples, we need to determine their finishing order based on the clues provided:\n\n1. A finished before B, but behind C.\n2. D finished before E, but behind B.\n\nLet's break down the clues:\n\n- From the first clue, we know the order is C -> A -> B.\n- From the second clue, we know the order is B -> D -> E.\n\nCombining these two pieces of information, we get the sequence:\n\nC -> A -> B -> D -> E\n\nThis sequence satisfies all the given clues. Therefore, the finishing order is:\n\n\\[\n\\boxed{CABDE}\n\\]"}]
+
+question number 4 :
+**\nThe total number of ducks is \\boxed{5}.\n</think>\n\nThe problem states: "There are two ducks in front of a duck, two ducks behind a duck and a duck in the middle. How many ducks are there?"\n\nTo solve this, we break down the problem into parts:\n\n1. **Two ducks in front of a duck**: This means there are three ducks in total here (two in front and one in the middle).\n2. **Two ducks behind a duck**: Similarly, this means there are three ducks in total here (two behind and one in the middle).\n3. **A duck in the middle**: This is a single duck.\n\nWe need to consider if the middle duck is the same in both the front and back groups. If it is, we do not double count it. Therefore, we have:\n\n- Two ducks in front of the middle duck.\n- Two ducks behind the middle duck.\n- The middle duck itself.\n\nAdding these together, we get a total of 5 ducks.\n\nThus, the final answer is \\(\\boxed{5}\\).'}]
+
+question number 5 :
+**\nThe man must take out at least \\boxed{40} socks.\n</think>\n\nTo determine how many socks the man must take out to be 100% certain he has at least one pair of black socks, we need to consider the worst-case scenario. The man has 21 identical blue socks, 15 identical black socks, and 17 identical red socks, totaling 53 socks.\n\n1. **Identify the number of non-black socks**: There are 21 blue and 17 red socks, which totals 38 non-black socks.\n2. **Worst-case scenario**: In the worst case, the man might take out all 38 non-black socks before taking out any black socks.\n3. **Taking out black socks**: After taking out all 38 non-black socks, he needs to take out enough black socks to ensure he has at least one pair. In the worst case, he might take out 1 black sock before taking out the second one.\n4. **Calculating the total socks taken out**: Therefore, he might need to take out 38 non-black socks, 1 black sock, and then another black sock, totaling 40 socks.\n\nThus, the man must take out at least \\boxed{40} socks to be 100% certain he has at least one pair of black socks.'}]
+
+question number 6 :
+:** Thursday.'}]
+
+question number 7 :
+**\n\\boxed{No}\n</think>\n\nInitially, the bad guy puts one bullet in a six-shooter revolver and spins the chambers. The bullet could be in any one of the six chambers with equal probability. When he fires, no bullet comes out, indicating he fired an empty chamber.\n\nIf he spins again, the bullet will be randomly positioned again, giving a 1/6 chance of the bullet being in the chamber he fires next. This results in a 1/6 chance of death and a 5/6 chance of survival.\n\nIf he doesn't spin again, he will fire the same empty chamber, guaranteeing no bullet will come out and ensuring his survival.\n\nTherefore, not spinning again is the better option as it guarantees survival, whereas spinning again only offers a 5/6 chance of survival.\n\n\\[\n\\boxed{No}\n\\]"}]
+
+question number 8 :
+**\nThey played \\boxed{8} games.\n</think>\n\nSusan and Lisa played tennis and bet $1 on each game. Susan won three games, and Lisa won five games. The total number of games played is the sum of Susan's wins and Lisa's wins:\n\n\\[\n3 \\text{ (Susan's wins)} + 5 \\text{ (Lisa's wins)} = 8 \\text{ games}\n\\]\n\nThus, the total number of games they played is \\boxed{8}."}]
+
