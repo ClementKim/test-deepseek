@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import time
 
 import pandas as pd
 
@@ -41,6 +42,9 @@ def run_model(
 
     returned_respond = []
     for idx, question in enumerate(question_list, start = 1):
+        if idx <= 15:
+            continue
+
         print(f"now solving Q{idx}")
 
         data = {
@@ -165,8 +169,9 @@ def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
 #        ["questions/sample_question.txt", "string", False],
-        ["benchmark/gpqa_diamond.csv", "string", False]
+#        ["benchmark/gpqa_diamond.csv", "string", False]
 #        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
+        ["benchmark/aime/2024/AIME2024.txt", "string", False],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
@@ -212,7 +217,14 @@ def main():
         for key, value in returned_result[target_key[0]].items():
             save_file = "result/"+ target_key[0][:-4] + "_" + str(key) + "_result.txt"
 
-            with open(save_file, "w") as file:
+            file_name = ''
+            for character in save_file:
+                if ((not (file_name == "result")) and (character == "/")):
+                    file_name += "_"
+                else:
+                    file_name += character
+
+            with open(file_name, "w") as file:
                 file.write("speaking Chinese: " + str(value[0]) + "\n")
                 file.write("number of chinese: " + str(value[1]) + "\n")
 
