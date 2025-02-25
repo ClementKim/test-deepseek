@@ -26,34 +26,6 @@ def run_model(
 
     return full_answer
 
-def matching_answer(
-        answer_list : list,
-        model_result_list : list
-        ) -> int:
-
-    number_of_matching = 0
-    actual_returned_answer = []
-
-    for sentence in model_result_list:
-        for index in range(len(sentence)-1, 7, -1):
-            if sentence[index-7:index] == "\\boxed{":
-                answer = 0
-                while sentence[index + anchor] != "}":
-                    answer += 1
-
-                actual_returned_answer.append(sentence[index:index + anchor])
-
-    if not (len(actual_returned_answer) == len(answer_lsit)):
-        print("Error: the length of actual returned answer list are not matching")
-
-        return -1
-
-    for index in range(len(answer_list)):
-        if (int(answer_list[index]) == int(actual_returned_answer[index])):
-            number_of_matching += 1
-
-    return number_of_matching
-
 def file_to_list(file_name : str) -> list:
     if (file_name[-4:] == ".csv"):
         df = pd.read_csv(file_name)
@@ -81,17 +53,57 @@ def file_to_list(file_name : str) -> list:
 
     return listed_file
 
+def split_think_and_answer_and_write_file(generated_list : list) -> bool:
+    generated_answer = []
+
+    for lst in generated_list:
+        temp = []
+        temporal_string = ""
+        for question_number, sentence in enumerate(lst[1], start = 1):
+            for index in range(len(sentence)-6, 6, -1):
+                if ((index >= 6) and (sentence[index-6:index] == "Answer")):
+                    while (sentence[index] == ":" or sentence[index] == "*"):
+                        index += 1
+
+                    temporal_string = sentence[index:]
+                    break
+
+            if (not (temporal_string)):
+                return False
+
+            temp.append([question_number, temporal_string])
+
+        if (not (temp)):
+            return False
+
+        generated_answer.append([lst[0], temp])
+
+    if (not (generated_answer)):
+        return False
+
+    with open("answer_only.txt", "w") as file:
+        for question_and_answer in generated_answer:
+            file.write(question_and_answer[0] + "\n--------------------")
+
+            for answer in question_and_answer[1]:
+                file.write("question number " + str(answer[0]) + " :\n")
+                file.write(answer[1])
+                file.write("\n\n")
+
+    return True
+
 def main():
     file_list = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
         # ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
         # ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"]
-        ["questions/question_logic_original.txt", "string", False]
+        ["questions/question_logic_original.txt", "string", False, None]
     ]
 
 #    file_name = 
     model_number = argv[1]
 
+    generated_answer = []
     for target_dir in file_list:
         file_name = target_dir[0]
 
@@ -99,10 +111,17 @@ def main():
 
         testing_list = run_model(questions, model_number)
 
+        temp = []
         for i in range(len(testing_list)):
-            print(testing_list[i])
+            temp.append(testing_list[i])
 
-    print("done")
-    
+        generated_answer.append([target_dir[0], temp])
+
+    if (split_think_and_answer_and_write_file(generated_answer)):
+        print("done")
+
+    else:
+        print("error on split think and answer and write file")
+
 if __name__ == "__main__":
     main()
