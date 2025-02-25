@@ -20,7 +20,7 @@ def run_model(
             break
 
         full_answer.append(list(pipe(question,
-                        max_length = 4096,
+                        max_length = 131072,
                         do_sample = True,
                         truncation = True)))
 
