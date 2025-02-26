@@ -46,10 +46,8 @@ def run_model(
     model_name = "deepseek-r1:" + str(model_number) + "b"
 
     returned_respond = []
-    for idx, question in enumerate(question_list, start = 1):
-        if idx <= 15:
-            continue
 
+    for idx, question in enumerate(question_list, start = 1):
         print(f"now solving Q{idx}")
 
         data = {
@@ -174,7 +172,8 @@ def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
 #        ["questions/sample_question.txt", "string", False],
-#        ["benchmark/gpqa_diamond.csv", "string", False]
+#        ["questions/sample_question2.txt", "string", False],
+        ["benchmark/gpqa/gpqa_diamond.csv", "string", False],
 #        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
         ["benchmark/aime/2024/AIME2024.txt", "string", False],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
@@ -184,7 +183,8 @@ def main():
         ["benchmark/math500/problem_set.pkl", "string", False, None]
     ]
 
-    model_to_run = [70]
+#model_to_run = [70]
+    model_to_run = [8]
     returned_result = {}
 
     for testing_target in question_and_answer_dir:
