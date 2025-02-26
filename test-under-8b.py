@@ -74,14 +74,16 @@ def split_think_and_answer_and_write_file(generated_list : list) -> bool:
             temp.append([question_number, temporal_string])
 
         if (not (temp)):
+            print("not temp")
             return False
 
         generated_answer.append([lst[0], temp])
 
     if (not (generated_answer)):
+        print("not generated answer")
         return False
 
-    with open("answer_only.txt", "w") as file:
+    with open("answer_only-test.txt", "w") as file:
         for question_and_answer in generated_answer:
             file.write(question_and_answer[0] + "\n--------------------")
 

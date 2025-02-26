@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import pickle
 import time
 
 import pandas as pd
@@ -27,6 +28,10 @@ def file_to_list(file_dir : str) -> list:
         listed_file.pop()
 
         f.close()
+
+    elif (file_dir[-4:] == "pkl"):
+        with open(file_dir, "rb") as f:
+            listed_file = pickle.load(f)
 
     return listed_file
 
@@ -175,7 +180,8 @@ def main():
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
-#        ["questions/question_not_logic.txt", "string", False]
+#        ["questions/question_not_logic.txt", "string", False],
+        ["benchmark/math500/problem_set.pkl", "string", False, None]
     ]
 
     model_to_run = [70]
@@ -215,14 +221,7 @@ def main():
 
     for idx, target_key in enumerate(question_and_answer_dir, start = 1):
         for key, value in returned_result[target_key[0]].items():
-            save_file = "result/"+ target_key[0][:-4] + "_" + str(key) + "_result.txt"
-
-            file_name = ''
-            for character in save_file:
-                if ((not (file_name == "result")) and (character == "/")):
-                    file_name += "_"
-                else:
-                    file_name += character
+            file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "_result.txt"
 
             with open(file_name, "w") as file:
                 file.write("speaking Chinese: " + str(value[0]) + "\n")
