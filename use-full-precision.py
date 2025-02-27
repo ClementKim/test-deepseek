@@ -1,7 +1,40 @@
+import pickle
+
 import pandas as pd
 
 from sys import argv
 from transformers import pipeline
+
+def file_to_list(file_name : str) -> list:
+    if (file_name[-4:] == ".csv"):
+        df = pd.read_csv(file_name)
+
+        question = df.loc[:, "Question"]
+
+        listed_file = []
+        for q in question:
+            if q == "\n":
+                continue
+
+            listed_file.append(q)
+
+    elif (file_name[-4:] == ".txt"):
+        f = open(file_name, "r")
+
+        lines = f.read()
+
+        listed_file = list(lines.split("\n"))
+        listed_file.pop()
+
+    elif (file_name[-4:] == ".pkl"):
+        with open(file_name, "rb") as f:
+            listed_file = pickle.load(f)
+
+    else:
+        print("file type error")
+        exit(1)
+
+    return listed_file
 
 def run_model(
         questions : list,
@@ -26,34 +59,10 @@ def run_model(
 
     return full_answer
 
-def file_to_list(file_name : str) -> list:
-    if (file_name[-4:] == ".csv"):
-        df = pd.read_csv(file_name)
-
-        question = df.loc[:, "Question"]
-
-        listed_file = []
-        for q in question:
-            if q == "\n":
-                continue
-
-            listed_file.append(q)
-
-    elif (file_name[-4:] == ".txt"):
-        f = open(file_name, "r")
-
-        lines = f.read()
-
-        listed_file = list(lines.split("\n"))
-        listed_file.pop()
-
-    else:
-        print("file type error")
-        exit(1)
-
-    return listed_file
-
-def split_think_and_answer_and_write_file(generated_list : list) -> bool:
+def split_think_and_answer_and_write_file(
+        test_name : str,
+        generated_list : list
+        ) -> bool:
     generated_answer = []
 
     for lst in generated_list:
@@ -62,14 +71,11 @@ def split_think_and_answer_and_write_file(generated_list : list) -> bool:
         for question_number, sentence in enumerate(lst[1], start = 1):
             for index in range(len(sentence)-6, 6, -1):
                 if ((index >= 6) and (sentence[index-6:index] == "Answer")):
-                    while (sentence[index] == ":" or sentence[index] == "*"):
-                        index += 1
-
                     temporal_string = sentence[index:]
                     break
 
             if (not (temporal_string)):
-                return False
+                temporal_string = sentence
 
             temp.append([question_number, temporal_string])
 
@@ -83,26 +89,30 @@ def split_think_and_answer_and_write_file(generated_list : list) -> bool:
         print("not generated answer")
         return False
 
-    with open("answer_only-test.txt", "w") as file:
+    with open("result/" + file_name[:-4] + ".txt", "w") as file:
         for question_and_answer in generated_answer:
-            file.write(question_and_answer[0] + "\n--------------------")
+            file.write(question_and_answer[0] + "\n--------------------\n")
 
             for answer in question_and_answer[1]:
                 file.write("question number " + str(answer[0]) + " :\n")
-                file.write(answer[1])
+                file.write(str(answer[1]))
                 file.write("\n\n")
 
+    print("done for creating txt file")
     return True
 
 def main():
     file_list = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
+        # ["questions/question_logic_original.txt", "string", False, None]
         # ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
         # ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"]
-        ["questions/question_logic_original.txt", "string", False, None]
+        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
+        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
+        ["benchmark/math500/problem_set.pkl", "string", False, None],
+        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
     ]
 
-#    file_name = 
     model_number = argv[1]
 
     generated_answer = []
@@ -119,11 +129,18 @@ def main():
 
         generated_answer.append([target_dir[0], temp])
 
-    if (split_think_and_answer_and_write_file(generated_answer)):
+    if (split_think_and_answer_and_write_file(file_name, generated_answer)):
         print("done")
 
     else:
         print("error on split think and answer and write file")
+        print("returning list file with pickle")
+
+        with open("./result/generated_answer_", "wb") as file:
+            try:
+                pickle.dump(generated_answer, file)
+            except:
+                print("failed to return list file with pickle")
 
 if __name__ == "__main__":
     main()

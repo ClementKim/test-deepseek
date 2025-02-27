@@ -5,7 +5,7 @@ source test/bin/activate
 ollama serve &
 
 echo "running main.py"
-python3 main.py 2> main-error
+python3 use-quantized.py 2> main-error
 
 echo "removing deepseek r1 distill llama 70b"
 ollama rm deepseek-r1:70b

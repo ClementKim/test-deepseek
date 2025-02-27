@@ -29,7 +29,7 @@ def file_to_list(file_dir : str) -> list:
 
         f.close()
 
-    elif (file_dir[-4:] == "pkl"):
+    elif (file_dir[-4:] == ".pkl"):
         with open(file_dir, "rb") as f:
             listed_file = pickle.load(f)
 
@@ -172,14 +172,15 @@ def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
 #        ["questions/sample_question.txt", "string", False],
-#        ["questions/sample_question2.txt", "string", False],
-        ["benchmark/gpqa/gpqa_diamond.csv", "string", False],
+#        ["questions/sample_question2.txt", "string", False]
+#        ["benchmark/gpqa/gpqa_diamond.pkl", "string", False],
 #        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
-        ["benchmark/aime/2024/AIME2024.txt", "string", False],
+#        ["benchmark/aime/2024/AIME2024.txt", "string", False],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
 #        ["questions/question_not_logic.txt", "string", False],
+        ["benchmark/aime/2025/AIME2025.txt", "string", False, None],
         ["benchmark/math500/problem_set.pkl", "string", False, None]
     ]
 
@@ -221,7 +222,22 @@ def main():
 
     for idx, target_key in enumerate(question_and_answer_dir, start = 1):
         for key, value in returned_result[target_key[0]].items():
-            file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "_result.txt"
+            file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_bit_quanrized_result.txt"
+
+            '''
+            file_name = ""
+            flag = False
+            for txt in temp_file_name:
+                if (file_name == "result/"):
+                    flag = True
+
+                if (flag and (txt == "/")):
+                    file_name += "_"
+                    continue
+
+                file_name += txt
+
+            '''
 
             with open(file_name, "w") as file:
                 file.write("speaking Chinese: " + str(value[0]) + "\n")
@@ -244,7 +260,7 @@ def main():
                     file.write("returned responds: \n")
                     for idx, respond in enumerate(value[5], start = 1):
                         file.write("Q" + str(idx) + ":")
-                        file.write(respond + "\n")
+                        file.write(respond + "\n\n")
 
             file.close()
 
