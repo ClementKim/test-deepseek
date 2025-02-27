@@ -48,7 +48,9 @@ def run_model(
             device_map = "auto"
             )
 
+    print(f"operating DeepSeek R1 Distill Llama {model_number_ipt}B")
     for question_number, question in enumerate(questions, start = 1):
+        print(f"solving question number {question_number}")
         if not(question):
             break
 
@@ -57,6 +59,10 @@ def run_model(
                         do_sample = True,
                         truncation = True)))
 
+        print(f"done for question #{question_number}")
+
+    print("done for generating")
+
     return full_answer
 
 def split_think_and_answer_and_write_file(
@@ -64,6 +70,8 @@ def split_think_and_answer_and_write_file(
         generated_list : list
         ) -> bool:
     generated_answer = []
+
+    print("split think and answer and write file function is working")
 
     for lst in generated_list:
         temp = []
@@ -89,7 +97,7 @@ def split_think_and_answer_and_write_file(
         print("not generated answer")
         return False
 
-    with open("result/" + file_name[:-4] + ".txt", "w") as file:
+    with open("result/" + test_name[:-4] + ".txt", "w") as file:
         for question_and_answer in generated_answer:
             file.write(question_and_answer[0] + "\n--------------------\n")
 
@@ -106,11 +114,12 @@ def main():
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
         # ["questions/question_logic_original.txt", "string", False, None]
         # ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
-        # ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"]
-        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
-        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
-        ["benchmark/math500/problem_set.pkl", "string", False, None],
-        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
+         ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"],
+         ["questions/sample_question2.txt", "number", False, "questions/sample_answer.txt"]
+#        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
+#        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
+#        ["benchmark/math500/problem_set.pkl", "string", False, None],
+#        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
     ]
 
     model_number = argv[1]
