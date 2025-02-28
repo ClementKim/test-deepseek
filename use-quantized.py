@@ -173,15 +173,15 @@ def main():
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)] 
 #        ["questions/sample_question.txt", "string", False],
 #        ["questions/sample_question2.txt", "string", False]
-#        ["benchmark/gpqa/gpqa_diamond.pkl", "string", False],
 #        ["benchmark/aime/2024/AIME2024.txt", "number", False, "benchmark/aime/2024/AIME2024-answer.txt"],
-#        ["benchmark/aime/2024/AIME2024.txt", "string", False],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
 #        ["questions/question_not_logic.txt", "string", False],
+        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
         ["benchmark/aime/2025/AIME2025.txt", "string", False, None],
-        ["benchmark/math500/problem_set.pkl", "string", False, None]
+        ["benchmark/math500/problem_set.pkl", "string", False, None],
+        ["benchmark/gpqa/gpqa_diamond.pkl", "string", False]
     ]
 
 #model_to_run = [70]
