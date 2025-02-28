@@ -114,12 +114,12 @@ def main():
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
         # ["questions/question_logic_original.txt", "string", False, None]
         # ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
-         ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"],
-         ["questions/sample_question2.txt", "number", False, "questions/sample_answer.txt"]
-#        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
-#        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
-#        ["benchmark/math500/problem_set.pkl", "string", False, None],
-#        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
+#         ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"],
+#         ["questions/sample_question2.txt", "number", False, "questions/sample_answer.txt"]
+        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
+        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
+        ["benchmark/math500/problem_set.pkl", "string", False, None],
+        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
     ]
 
     model_number = argv[1]
