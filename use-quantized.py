@@ -224,21 +224,6 @@ def main():
         for key, value in returned_result[target_key[0]].items():
             file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_bit_quanrized_result.txt"
 
-            '''
-            file_name = ""
-            flag = False
-            for txt in temp_file_name:
-                if (file_name == "result/"):
-                    flag = True
-
-                if (flag and (txt == "/")):
-                    file_name += "_"
-                    continue
-
-                file_name += txt
-
-            '''
-
             with open(file_name, "w") as file:
                 file.write("speaking Chinese: " + str(value[0]) + "\n")
                 file.write("number of chinese: " + str(value[1]) + "\n")
