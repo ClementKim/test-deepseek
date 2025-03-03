@@ -5,7 +5,7 @@ import json
 import pandas as pd
 
 from sys import argv
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer
 
 def file_to_list(file_dir : str) -> list:
     if (file_dir[-4:] == ".csv"):
@@ -35,113 +35,117 @@ def file_to_list(file_dir : str) -> list:
             listed_file = pickle.load(f)
 
     else:
-        print("file type error")
-        exit(1)
+        raise ValueError(f"Invalid File Type Error : '{file_dir[-4:]}' is not a correct file type")
 
     return listed_file
 
-def run_full_precision_model(
-        model_number : str
+def run_model(
+        model_number : str,
+        model_version : str,
         question_list : list,
         ) -> list:
+    
+    if (model_version == "full"):
+        qwen = ["1.5", "7", "14", "32"]
+        llama = ["8", "70"]
+    
+        if (model_number in qwen):
+            model_name = "deepseek-ai/DeepSeek-R1-Qwen-" + model_number + "B"
 
-    generated_answer = []
-
-    pipe = pipeline("text-generation",
-            model = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + model_number + "B",
-            device_map = "auto"
-            )
-
-    for question_number, question in enumerate(question_list, start = 1):
-        print(f"now solving Q{question_number}")
-        if (not (question)):
-            break
-
-        generated_answer.append(list(pipe(question,
-                        max_length = 131072,
-                        do_sample = True,
-                        truncation = True)))
-
-    print("done")
-
-    full_answer = []
-    for generated in range(len(generated_answer)):
-        full_answer.append([target_dir[0], temp])
-
-    return full_answer
-
-def run_four_bit_quantized_model(
-        model_number : str,
-        question_list : list
-        ) -> list:
-
-    url = "http://localhost:11434/api/generate"
-    headers = {"Content-Type": "application/json"}
-
-    model_name = "deepseek-r1:" + model_number + "b"
-
-    full_answer = []
-    for question_number, question in enumerate(question_list, start = 1):
-        print(f"now solvign Q{question_number}")
-
-        data = {
-            "model": model_name,
-            "prompt": question
-        }
-
-        if not (data["prompt"] == question):
-            print(f"Error in data prompt: question number {question_number}")
-            exit(1)
-
-        response = requests.post(url, json = data, headers = headers)
-
-        if response.status_code = 200:
-            json_objects = response.content.decode().strip().split("\n")
-            data = [json.loads(obj) for obj in json_objects]
-
-            res_text = ''
-            for item in data:
-                res_text += item['response']
-
-            full_answer.append(res_text)
+        elif (model_number in llama):
+            model_name = "deepseek-ai/DeepSeek-R1-Llama-" + model_number + "B"
 
         else:
-            print(f"Error: {response.status_code}, {response.text}")
+            raise ValueError(f"Model Number Error : '{model_number}' is not a correct model number")
+
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if (tokenizer.model_max_length == None):
+            raise ValueError(f"Error : '{tokenizer.model_max_length}' is not a correct max length of model")
+            
+        pipe = pipeline("text-generation",
+                model = model_name,
+                device_map = "auto"
+                )
+
+    elif (model_version == "quantized"):
+        url = "http://localhost:11434/api/generate"
+        headers = {"Content-Type": "application/json"}
+        model_name = "deepseek-r1:" + model_number + "b"
+
+    else:
+        raise ValueError(f"Invalid Model Version : {model_version}")
+
+    full_answer = []
+    for question_number, question in enumerate(question_list, start = 1):
+        print(f"now solving Q{question_number}")
+
+        if (model_version == "full"):
+            full_answer.append(list(pipe(question,
+                            max_length = tokenizer.model_max_length,
+                            do_sample = True,
+                            truncation = True)))
+
+        elif (model_version == "quantized"):
+            data = {
+                "model": model_name,
+                "prompt": question
+            }
+
+            response = requests.post(url, json = data, headers = headers)
+
+            if (response.status_code == 200):
+                json_objects = response.content.decode().strip().split("\n")
+                data = [json.loads(obj) for obj in json_objects]
+
+                res_text = ''
+                for item in data:
+                    res_text += item['response']
+
+                full_answer.append(res_text)
+
+            else:
+                raise ValueError(f"Error : {response.status_code}, {response.text}")
+
+    print("running model is done")
 
     return full_answer
 
-def split_answer_thinking(model_result : list) -> tuple[list, list]:
-    '''
-    code implementation for full precision is needed
-    '''
+def split_answer_thinking(
+        model_version : str,
+        model_result : list
+        ) -> tuple[list, list]:
 
     answer_only = []
     thinking_only = []
 
-    for sentences in model_result:
-        sentence_split = list(sentences.split("\n"))
+    if (model_version == "full"):
+        pass
 
-        thinking = False
-        thinking_temp_list = []
-        for thinking_process in sentence_split:
-            if "<think>" in think_process:
-                thinking = True
-                continue
+    elif (model_version == "quantized"):
+        for sentences in model_result:
+            sentence_split = list(sentences.split("\n"))
 
-            elif "</think>" in think_process:
-                break
+            thinking = False
+            thinking_temp_list = []
+            for thinking_process in sentence_split:
+                if "<think>" in thinking_process:
+                    thinking = True
+                    continue
 
-            if (thinking):
-                thinking_temp_list.append(think_process)
+                elif "</think>" in thinking_process:
+                    break
 
-        thinking_only.append(thinking_temp_list)
+                if (thinking):
+                    thinking_temp_list.append(thinking_process)
 
-        if (sentence_split[-1] == "\\]":
-            boxed_answer = sentence_split[-2]
-        else:
-            boxed_answer = sentence_split[-1]
+            thinking_only.append(thinking_temp_list)
 
-        answer_only.append(boxed_answer)
+            if (sentence_split[-1] == "\\]"):
+                boxed_answer = sentence_split[-2]
+            else:
+                boxed_answer = sentence_split[-1]
+
+            answer_only.append(boxed_answer)
 
     return answer_only, thinking_only
 
@@ -178,12 +182,11 @@ def main():
         ["benchmark/math500/problem_set.pkl", "string", False, None]
     ]
 
-    # user input form: model_to_run,full_or_quantized
-    # full_or_quantized: 1 for full precision, 0 for 4bit quantized
-    user_ipt_list = list(argv[1].split(","))
+    # To run this program : python3 main.py [model_number] [model_version]
+    # model_version: "full" for full precision, "quantized" for 4bit quantized
 
-    model_number = user_ipt_list[0]
-    full_or_quantized = int(user_ipt_list[1])
+    model_number = argv[1]
+    model_version = argv[2]
 
     returned_result = {}
 
@@ -194,22 +197,12 @@ def main():
 
         result_to_append = []
 
-        if (full_or_quantized):
-            returned_respond = run_full_precision_model(model_number, questions)
-        else:
-            returned_respond = run_four_bit_quantized_model(model_number, questions)
+        returned_respond = run_model(model_number, model_version, questions)
 
-        respond_answer, think = split_answer_thinking(returned_respond)
+        respond_answer, think = split_answer_thinking(model_version, returned_respond)
         speak_chinese, number_of_chinese, error_list = find_speak_chinese(returned_respond)
 
         result_to_append.extend([speak_chinese, number_of_chinese, error_list, testing_target[2]])
-
-        if not (testing_target[2]):
-            mentioning_china_or_chinese_while_thinking = find_word_china_and_chinese(think)
-            result_to_append.append(mentioning_china_or_chinese_while_thinking)
-
-        else:
-            result_to_append.append({})
 
         result_to_append.append(respond_answer)
 
@@ -217,10 +210,11 @@ def main():
 
     for idx, target_key in enumerate(question_and_answer_dir, start = 1):
         for key, value in returned_result[target_key[0]].items():
-            if (full_or_quantized):
+            if (model_version == "full"):
                 file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_full_precision_result.txt"
-            else:
-                file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_bit_quanrized_result.txt"
+
+            elif (model_version == "quantized"):
+                file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_bit_quantized_result.txt"
 
             with open(file_name, "w") as file:
                 file.write("speaking Chinese: " + str(value[0]) + "\n")
