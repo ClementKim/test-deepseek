@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 
 from sys import argv
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer
 
 def file_to_list(file_name : str) -> list:
     if (file_name[-4:] == ".csv"):
@@ -43,19 +43,22 @@ def run_model(
 
     full_answer = []
 
+    model_name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-" + model_number_ipt + "B"
     pipe = pipeline("text-generation",
-            model = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + model_number_ipt + "B",
+            model = model_name,
             device_map = "auto"
             )
 
-    print(f"operating DeepSeek R1 Distill Llama {model_number_ipt}B")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+    print(f"operating DeepSeek R1 Distill Qwen {model_number_ipt}B")
     for question_number, question in enumerate(questions, start = 1):
         print(f"solving question number {question_number}")
         if not(question):
             break
 
         full_answer.append(list(pipe(question,
-                        max_length = 131072,
+                        max_length = tokenizer.model_max_length,
                         do_sample = True,
                         truncation = True)))
 
@@ -103,7 +106,7 @@ def split_think_and_answer_and_write_file(
 
             for answer in question_and_answer[1]:
                 file.write("question number " + str(answer[0]) + " :\n")
-                file.write(str(answer[1]))
+                file.write(str(answer[1][0]['generated_text']))
                 file.write("\n\n")
 
     print("done for creating txt file")
@@ -114,12 +117,12 @@ def main():
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
         # ["questions/question_logic_original.txt", "string", False, None]
         # ["questions/question_logic.txt", "number", False, "questions/question_logic-answer.txt"],
-#         ["questions/sample_question.txt", "number", False, "questions/sample_answer.txt"],
+         ["questions/sample_question.txt", "string", False, None],
 #         ["questions/sample_question2.txt", "number", False, "questions/sample_answer.txt"]
-        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
-        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
-        ["benchmark/math500/problem_set.pkl", "string", False, None],
-        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
+#        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
+#        ["benchmark/aime/2025/AINE2025.txt", "string", False, None],
+#        ["benchmark/math500/problem_set.pkl", "string", False, None],
+#        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None]
     ]
 
     model_number = argv[1]
