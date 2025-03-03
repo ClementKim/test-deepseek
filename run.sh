@@ -7,7 +7,7 @@ source test/bin/activate
 full_start_time=$(date '+%s')
 
 echo "running use-full-precision.py" >> log
-python3 use-full-precision.py 1> result/full-stdout 2> result/full-stderr
+python3 main.py 8 full 1> result/full-stdout 2> result/full-stderr
 echo "done for running use-full-precision.py" >> log
 
 full_end_time=$(date '+%s')
@@ -35,7 +35,7 @@ ollama pull deepseek-r1:70b
 quantized_start_time=$(date '+%s')
 
 echo "running use-quantized.py" >> log
-python3 use-quantized.py 1> result/quantized-stdout 2> result/quantized-stderr
+python3 main.py 70 quantized 1> result/quantized-stdout 2> result/quantized-stderr
 echo "done for running use-quantized.py" >> log
 
 quantized_end_time=$(date '+%s')
