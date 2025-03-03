@@ -1,0 +1,9 @@
+speaking Chinese: False
+number of chinese: 0
+error sentences: 
+
+number of mentioning the word "Chinese" while thinking: 0
+number of mentioning the word "China" while thinking: 0
+returned responds: 
+Q1:\boxed{2}
+

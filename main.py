@@ -1,6 +1,7 @@
 import pickle
 import requests
 import json
+import re
 
 import pandas as pd
 
@@ -44,16 +45,16 @@ def run_model(
         model_version : str,
         question_list : list,
         ) -> list:
-    
+
     if (model_version == "full"):
         qwen = ["1.5", "7", "14", "32"]
         llama = ["8", "70"]
-    
+
         if (model_number in qwen):
-            model_name = "deepseek-ai/DeepSeek-R1-Qwen-" + model_number + "B"
+            model_name = "deepseek-ai/DeepSeek-R1-Distill-Qwen-" + model_number + "B"
 
         elif (model_number in llama):
-            model_name = "deepseek-ai/DeepSeek-R1-Llama-" + model_number + "B"
+            model_name = "deepseek-ai/DeepSeek-R1-Distill-Llama-" + model_number + "B"
 
         else:
             raise ValueError(f"Model Number Error : '{model_number}' is not a correct model number")
@@ -61,7 +62,7 @@ def run_model(
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         if (tokenizer.model_max_length == None):
             raise ValueError(f"Error : '{tokenizer.model_max_length}' is not a correct max length of model")
-            
+
         pipe = pipeline("text-generation",
                 model = model_name,
                 device_map = "auto"
@@ -118,9 +119,31 @@ def split_answer_thinking(
     answer_only = []
     thinking_only = []
 
-    if (model_version == "full"):
-        pass
+    for sentence in model_result:
+        if (model_version == "full"):
+            sentence_split = list(sentence[0]['generated_text'].split("\n"))
 
+        elif (model_version == "quantized"):
+            sentence_split = list(sentence.split("\n"))
+
+        thinking_temp_list = []
+        for thinking_process in sentence_split:
+            if "</think>" in thinking_process:
+                break
+
+            thinking_temp_list.append(thinking_process)
+
+    thinking_only.append(thinking_temp_list)
+
+    if (sentence_split[-1] == "\\]"):
+        boxed_answer = sentence_split[-2]
+    else:
+        boxed_answer = sentence_split[-1]
+
+    answer_only.append(boxed_answer)
+
+    return answer_only, thinking_only
+'''
     elif (model_version == "quantized"):
         for sentences in model_result:
             sentence_split = list(sentences.split("\n"))
@@ -146,10 +169,25 @@ def split_answer_thinking(
                 boxed_answer = sentence_split[-1]
 
             answer_only.append(boxed_answer)
+'''
 
-    return answer_only, thinking_only
+def find_word_china_and_chinese(thinking_only : list) -> dict:
+    china_or_chinese = {
+        "chinese": 0,
+        "china": 0
+    }
 
-def find_speak_chinese(respond_list : list) -> tuple[bool, int, list]:
+    for thinking_list in thinking_only:
+        for think in thinking_list:
+            china_or_chinese['chinese'] += len(re.findall(r"\b[Cc]hinese", think))
+            china_or_chinese['china'] += len(re.findall(r"\b[Cc]hina", think))
+
+    return china_or_chinese
+
+def find_speak_chinese(
+        model_version : str,
+        respond_list : list
+        ) -> tuple[bool, int, list]:
     number_of_chinese = 0
     speak_chinese = False
 
@@ -157,12 +195,15 @@ def find_speak_chinese(respond_list : list) -> tuple[bool, int, list]:
     ascii_list = [str(ascii_number) for ascii_number in range(128)]
 
     for answer in respond_list:
+        if (model_version == "full"):
+            answer = answer[0]['generated_text']
+
         for letter in answer:
             if not (str(ord(letter)) in ascii_list):
                 number_of_chinese += 1
                 errors_list.append(letter)
 
-    if not (number_of_chinese):
+    if number_of_chinese:
         speak_chinese = True
 
     return speak_chinese, number_of_chinese, errors_list
@@ -170,16 +211,16 @@ def find_speak_chinese(respond_list : list) -> tuple[bool, int, list]:
 def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
-#        ["questions/sample_question.txt", "string", False],
+        ["questions/sample_question.txt", "string", False],
 #        ["questions/sample_question2.txt", "string", False]
-        ["benchmark/gpqa/gpqa_diamond.pkl", "string", False, None],
-        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
+#        ["benchmark/gpqa/gpqa_diamond.pkl", "string", False, None],
+#        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "string", False, "questions/question_logic-answer.txt"],
 #        ["questions/question_not_logic.txt", "string", False],
-        ["benchmark/aime/2025/AIME2025.txt", "string", False, None],
-        ["benchmark/math500/problem_set.pkl", "string", False, None]
+#        ["benchmark/aime/2025/AIME2025.txt", "string", False, None],
+#        ["benchmark/math500/problem_set.pkl", "string", False, None]
     ]
 
     # To run this program : python3 main.py [model_number] [model_version]
@@ -200,9 +241,12 @@ def main():
         returned_respond = run_model(model_number, model_version, questions)
 
         respond_answer, think = split_answer_thinking(model_version, returned_respond)
-        speak_chinese, number_of_chinese, error_list = find_speak_chinese(returned_respond)
+        speak_chinese, number_of_chinese, error_list = find_speak_chinese(model_version, returned_respond)
 
         result_to_append.extend([speak_chinese, number_of_chinese, error_list, testing_target[2]])
+
+        mentioning_china_or_chinese_while_thinking = find_word_china_and_chinese(think)
+        result_to_append.append(mentioning_china_or_chinese_while_thinking)
 
         result_to_append.append(respond_answer)
 
