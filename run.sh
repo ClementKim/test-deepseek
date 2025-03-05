@@ -6,9 +6,9 @@ source test/bin/activate
 
 full_start_time=$(date '+%s')
 
-echo "running use-full-precision.py" >> log
+echo "running 8b use-full-precision.py" > log
 python3 main.py 8 full 1> result/full-stdout 2> result/full-stderr
-echo "done for running use-full-precision.py" >> log
+echo "done for running 8b use-full-precision.py" >> log
 
 full_end_time=$(date '+%s')
 
@@ -20,22 +20,24 @@ full_second=$((full_diff % 60))
 
 echo "Total time: $full_day days $full_hour h $full_minute m $full_second s" >> log
 
-echo "removing ~/.cache/huggingface dir" >> log
-rm -rf ~/.cache/huggingface
-echo "done for removing" >> log
+#echo "removing ~/.cache/huggingface dir" >> log
+#rm -rf ~/.cache/huggingface
+#echo "done for removing" >> log
+
+: << END
 
 echo "ollama serve" >> log
 ollama serve &
 
 sleep 60
 
-echo "ollama pull deepseek-r1:70b" >> log
-ollama pull deepseek-r1:70b
+echo "ollama pull deepseek-r1:8b" >> log
+ollama pull deepseek-r1:8b
 
 quantized_start_time=$(date '+%s')
 
 echo "running use-quantized.py" >> log
-python3 main.py 70 quantized 1> result/quantized-stdout 2> result/quantized-stderr
+python3 main.py 8 quantized 1> result/quantized-stdout 2> result/quantized-stderr
 echo "done for running use-quantized.py" >> log
 
 quantized_end_time=$(date '+%s')
@@ -48,8 +50,10 @@ quantized_second=$((quantized_diff % 60))
 
 echo "Total time: $quantized_day days $quantized_hour h $quantized_minute m $quantized_second s" >> log
 
-echo "removing deepseek r1 distill llama 70b" >> log
-ollama rm deepseek-r1:70b
+#echo "removing deepseek r1 distill llama 8b" >> log
+#ollama rm deepseek-r1:8b
+
+END
 
 end_time=$(date '+%s')
 

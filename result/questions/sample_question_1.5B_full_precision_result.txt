@@ -5,5 +5,5 @@ error sentences:
 number of mentioning the word "Chinese" while thinking: 0
 number of mentioning the word "China" while thinking: 0
 returned responds: 
-Q1:\boxed{2}
+Q1:Yes, 1 + 1 equals 2.
 

@@ -135,7 +135,7 @@ def split_answer_thinking(
 
     thinking_only.append(thinking_temp_list)
 
-    if (sentence_split[-1] == "\\]"):
+    if (("\\]" in sentence_split[-1]) and ((set(sentence_split[-1][:-2])) == {' '})):
         boxed_answer = sentence_split[-2]
     else:
         boxed_answer = sentence_split[-1]
@@ -143,33 +143,6 @@ def split_answer_thinking(
     answer_only.append(boxed_answer)
 
     return answer_only, thinking_only
-'''
-    elif (model_version == "quantized"):
-        for sentences in model_result:
-            sentence_split = list(sentences.split("\n"))
-
-            thinking = False
-            thinking_temp_list = []
-            for thinking_process in sentence_split:
-                if "<think>" in thinking_process:
-                    thinking = True
-                    continue
-
-                elif "</think>" in thinking_process:
-                    break
-
-                if (thinking):
-                    thinking_temp_list.append(thinking_process)
-
-            thinking_only.append(thinking_temp_list)
-
-            if (sentence_split[-1] == "\\]"):
-                boxed_answer = sentence_split[-2]
-            else:
-                boxed_answer = sentence_split[-1]
-
-            answer_only.append(boxed_answer)
-'''
 
 def find_word_china_and_chinese(thinking_only : list) -> dict:
     china_or_chinese = {
@@ -211,16 +184,16 @@ def find_speak_chinese(
 def main():
     question_and_answer_dir = [
         # [file name, result is number or string, question is related with politics, answer file (if the result is number)]
-        ["questions/sample_question.txt", "string", False],
+#        ["questions/sample_question.txt", "string", False],
 #        ["questions/sample_question2.txt", "string", False]
-#        ["benchmark/gpqa/gpqa_diamond.pkl", "string", False, None],
-#        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
+        ["benchmark/gpqa/gpqa_diamond_question.pkl", "string", False, None],
+        ["benchmark/aime/2024/AIME2024.txt", "string", False, None],
 #        ["benchmark/gre/gre-questions.txt", "string", False],
 #        ["questions/political_question.txt", "string", True],
 #        ["questions/question_logic.txt", "string", False, "questions/question_logic-answer.txt"],
 #        ["questions/question_not_logic.txt", "string", False],
-#        ["benchmark/aime/2025/AIME2025.txt", "string", False, None],
-#        ["benchmark/math500/problem_set.pkl", "string", False, None]
+        ["benchmark/aime/2025/AIME2025.txt", "string", False, None],
+        ["benchmark/math500/problem_set.pkl", "string", False, None]
     ]
 
     # To run this program : python3 main.py [model_number] [model_version]
@@ -255,7 +228,7 @@ def main():
     for idx, target_key in enumerate(question_and_answer_dir, start = 1):
         for key, value in returned_result[target_key[0]].items():
             if (model_version == "full"):
-                file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_full_precision_result.txt"
+                file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_full_precision_result.txt"
 
             elif (model_version == "quantized"):
                 file_name = "result/"+ target_key[0][:-4] + "_" + str(key) + "B_four_bit_quantized_result.txt"
